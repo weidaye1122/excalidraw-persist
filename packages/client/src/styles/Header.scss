@@ -1,6 +1,7 @@
 .header {
   display: flex;
   justify-content: flex-start;
+  align-items: stretch;
   height: var(--lg-button-size);
   background-color: var(--color-surface-low);
   border-bottom: 1px solid var(--sidebar-border-color);
@@ -26,6 +27,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex: 1;
     height: var(--lg-button-size);
     background-color: var(--color-surface-low);
     border-bottom: 1px solid var(--sidebar-border-color);
@@ -34,6 +36,11 @@
     padding: 0 calc(4 * var(--space-factor));
     font-style: italic;
   }
+}
+
+.header-actions {
+  display: flex;
+  align-items: stretch;
 }
 
 .tab-bar {
@@ -72,6 +79,18 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+
+  &:hover {
+    background-color: var(--button-hover-bg);
+    color: var(--color-primary);
+  }
+}
+
+.logout-button {
+  border-left: 1px solid var(--sidebar-border-color);
+  padding: 0 calc(3 * var(--space-factor));
+  color: var(--color-gray-70);
+  white-space: nowrap;
 
   &:hover {
     background-color: var(--button-hover-bg);

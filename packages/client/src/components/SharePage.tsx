@@ -14,6 +14,10 @@ const SharePage = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    document.title = zhCN.common.appTitle;
+  }, []);
+
+  useEffect(() => {
     if (!shareId) return;
 
     const fetchShareInfo = async () => {
@@ -21,6 +25,7 @@ const SharePage = () => {
         setIsLoading(true);
         const info = await ShareService.getShareInfo(shareId);
         setShareInfo(info);
+        document.title = zhCN.common.appTitle;
       } catch (err) {
         setError(zhCN.share.loadShareInfoError);
         logger.error(zhCN.errors.fetchShareInfo, err, true);

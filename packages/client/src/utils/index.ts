@@ -1,5 +1,5 @@
 const exhaustiveMatchingGuard = (value: never): never => {
-  throw new Error(`Unhandled value: ${value}`);
+  throw new Error(`未处理的值：${value}`);
 };
 
 type DebouncedFunction<T extends (...args: any[]) => any> = (...args: Parameters<T>) => void;

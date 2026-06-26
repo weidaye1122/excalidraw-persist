@@ -10,98 +10,76 @@ interface ApiResponse<T> {
 
 type RequestBody = Record<string, unknown> | unknown[];
 
+const emitUnauthorized = () => {
+  window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+};
+
+const parseResponse = async <T>(response: Response): Promise<ApiResponse<T>> => {
+  try {
+    return (await response.json()) as ApiResponse<T>;
+  } catch {
+    return { success: response.ok };
+  }
+};
+
+const request = async <T>(endpoint: string, init?: RequestInit): Promise<T> => {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    credentials: 'include',
+    ...init,
+  });
+
+  const data = await parseResponse<T>(response);
+
+  if (response.status === 401) {
+    emitUnauthorized();
+    throw new Error(data.message || zhCN.errors.unauthorized);
+  }
+
+  if (!response.ok || data.success === false) {
+    throw new Error(data.message || zhCN.errors.requestFailedWithStatus(response.status));
+  }
+
+  return (data.data ?? data) as T;
+};
+
 export const api = {
   async get<T>(endpoint: string): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`);
-
-    const data: ApiResponse<T> = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || zhCN.errors.requestFailed);
-    }
-
-    return (data.data ?? data) as T;
+    return request<T>(endpoint);
   },
 
   async post<T>(endpoint: string, body?: RequestBody): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    return request<T>(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
     });
-
-    if (!response.ok) {
-      throw new Error(zhCN.errors.requestFailedWithStatus(response.status));
-    }
-
-    const data: ApiResponse<T> = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || zhCN.errors.requestFailed);
-    }
-
-    return data.data as T;
   },
 
   async put<T>(endpoint: string, body: RequestBody): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    return request<T>(endpoint, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
     });
-
-    if (!response.ok) {
-      throw new Error(zhCN.errors.requestFailedWithStatus(response.status));
-    }
-
-    const data: ApiResponse<T> = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || zhCN.errors.requestFailed);
-    }
-
-    return data.data as T;
   },
 
   async patch<T>(endpoint: string, body: RequestBody): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    return request<T>(endpoint, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
     });
-
-    if (!response.ok) {
-      throw new Error(zhCN.errors.requestFailedWithStatus(response.status));
-    }
-
-    const data: ApiResponse<T> = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || zhCN.errors.requestFailed);
-    }
-
-    return data.data as T;
   },
 
   async delete(endpoint: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    await request<void>(endpoint, {
       method: 'DELETE',
     });
-
-    if (!response.ok) {
-      throw new Error(zhCN.errors.requestFailedWithStatus(response.status));
-    }
-
-    const data: ApiResponse<void> = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || zhCN.errors.requestFailed);
-    }
   },
 };

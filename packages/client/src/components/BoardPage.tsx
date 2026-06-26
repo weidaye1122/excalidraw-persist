@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Header from './Header';
 import { useBoardContext } from '../contexts/BoardProvider';
 import '../styles/BoardPage.scss';
@@ -7,6 +8,10 @@ import { zhCN } from '../i18n/zhCN';
 
 const BoardPage = () => {
   const { isLoading, activeBoardId } = useBoardContext();
+
+  useEffect(() => {
+    document.title = zhCN.common.appTitle;
+  }, []);
 
   if (isLoading) {
     return (

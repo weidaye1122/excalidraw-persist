@@ -29,7 +29,7 @@ const BoardContext = createContext<BoardContextType | null>(null);
 export const useBoardContext = () => {
   const context = useContext(BoardContext);
   if (!context) {
-    throw new Error('useBoardContext must be used within a BoardProvider');
+    throw new Error('useBoardContext 必须在 BoardProvider 内使用');
   }
   return context;
 };

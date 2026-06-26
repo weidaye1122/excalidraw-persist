@@ -1,7 +1,21 @@
 export const zhCN = {
   common: {
+    appTitle: '无限画布',
     loading: '加载中...',
     returnHome: '返回首页',
+  },
+  auth: {
+    checkingStatus: '正在检查登录状态...',
+    loginTitle: '登录',
+    loginDescription: '请输入访问密码后继续使用。',
+    passwordLabel: '访问密码',
+    passwordPlaceholder: '请输入访问密码',
+    loginButton: '进入画布',
+    loggingIn: '登录中...',
+    logout: '退出登录',
+    passwordRequired: '请输入访问密码',
+    loginFailed: '登录失败，请稍后重试',
+    unauthorized: '请先登录',
   },
   board: {
     tabBarLoading: '正在加载画板...',
@@ -52,6 +66,8 @@ export const zhCN = {
     network: '连接服务器失败',
     requestFailed: '请求失败',
     requestFailedWithStatus: (status: number) => `请求失败（状态码 ${status}）`,
+    unauthorized: '请先登录',
+    checkAuthStatus: '检查登录状态失败',
     fetchBoards: '加载画板失败',
     createBoard: '创建画板失败',
     renameBoard: '更新画板名称失败',

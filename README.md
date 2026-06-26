@@ -14,7 +14,8 @@
 - 前端界面汉化，包括按钮、弹窗、提示文案等
 - 后端接口返回和常见错误提示汉化
 - 默认语言切换为中文
-- 页面标题调整为 `Excalidraw Persist_cn`
+- 浏览器标题调整为 `无限画布`
+- 新增单密码登录功能，适合个人自用，不做多用户系统
 
 ## Docker 部署
 
@@ -41,6 +42,8 @@ services:
       - NODE_ENV=production
       - PORT=4000
       - DB_PATH=/app/data/database.sqlite
+      - LOGIN_PASSWORD=你的访问密码
+      - LOGIN_SESSION_SECRET=一串更长的随机字符串
     volumes:
       - ./data:/app/data
 ```

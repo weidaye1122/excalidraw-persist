@@ -6,6 +6,10 @@ export const serverConfig = {
   nodeEnv: env.NODE_ENV || 'development',
   isDev: env.NODE_ENV !== 'production',
   dbPath: env.DB_PATH,
+  isLoginEnabled: env.LOGIN_PASSWORD.trim().length > 0,
+  loginPassword: env.LOGIN_PASSWORD,
+  loginSessionSecret:
+    env.LOGIN_SESSION_SECRET || `${env.LOGIN_PASSWORD || 'excalidraw-persist'}:session`,
 };
 
 export const dbConfig = {
