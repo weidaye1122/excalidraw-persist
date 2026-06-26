@@ -4,8 +4,8 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
   console.error(err.stack);
 
   res.status(500).json({
-    error: 'Internal Server Error',
-    message: process.env.NODE_ENV === 'production' ? 'Something went wrong' : err.message,
+    error: '服务器内部错误',
+    message: process.env.NODE_ENV === 'production' ? '服务发生错误' : err.message,
   });
 };
 

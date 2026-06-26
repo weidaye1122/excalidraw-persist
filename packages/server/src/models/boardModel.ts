@@ -6,13 +6,10 @@ export class BoardModel {
   public static async create(): Promise<Board> {
     const db = await getDb();
     const id = crypto.randomUUID();
-    const result = await db.get<Board>(
-      'INSERT INTO boards (id) VALUES (?) RETURNING *',
-      [id]
-    );
+    const result = await db.get<Board>('INSERT INTO boards (id) VALUES (?) RETURNING *', [id]);
 
     if (!result) {
-      throw new Error('Failed to create board');
+      throw new Error('创建画板失败');
     }
 
     return result;
@@ -25,9 +22,10 @@ export class BoardModel {
 
   public static async findAllActive(): Promise<Board[]> {
     const db = await getDb();
-    const result = await db.all<Board[]>('SELECT * FROM boards WHERE status = ? ORDER BY created_at ASC', [
-      BoardStatus.ACTIVE,
-    ]);
+    const result = await db.all<Board[]>(
+      'SELECT * FROM boards WHERE status = ? ORDER BY created_at ASC',
+      [BoardStatus.ACTIVE]
+    );
     return result;
   }
 

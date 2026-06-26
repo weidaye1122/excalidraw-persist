@@ -11,7 +11,7 @@ export const libraryController = {
 
       const board = await BoardModel.findById(boardId);
       if (!board) {
-        return res.status(404).json({ success: false, message: 'Board not found' });
+        return res.status(404).json({ success: false, message: '画板不存在' });
       }
 
       const libraryData = await LibraryModel.getByBoardId(boardId);
@@ -24,7 +24,7 @@ export const libraryController = {
       logger.error(`Error getting library for board ${req.params.boardId}:`, error);
       return res.status(500).json({
         success: false,
-        message: 'Failed to get library data',
+        message: '获取素材库数据失败',
       });
     }
   },
@@ -38,13 +38,13 @@ export const libraryController = {
       if (!Array.isArray(libraryItems)) {
         return res.status(400).json({
           success: false,
-          message: 'Invalid payload: libraryItems must be an array',
+          message: '请求数据无效：libraryItems 必须是数组',
         });
       }
 
       const board = await BoardModel.findById(boardId);
       if (!board) {
-        return res.status(404).json({ success: false, message: 'Board not found' });
+        return res.status(404).json({ success: false, message: '画板不存在' });
       }
 
       await LibraryModel.save(boardId, libraryItems);
@@ -52,13 +52,13 @@ export const libraryController = {
 
       return res.status(200).json({
         success: true,
-        message: `Library saved for board ${boardId}`,
+        message: '素材库已保存',
       });
     } catch (error) {
       logger.error(`Error saving library for board ${req.params.boardId}:`, error);
       return res.status(500).json({
         success: false,
-        message: 'Failed to save library data',
+        message: '保存素材库数据失败',
       });
     }
   },

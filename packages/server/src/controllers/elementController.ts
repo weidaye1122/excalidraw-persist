@@ -16,7 +16,7 @@ export const elementController = {
       if (!board) {
         return res.status(404).json({
           success: false,
-          message: 'Board not found',
+          message: '画板不存在',
         });
       }
 
@@ -37,7 +37,7 @@ export const elementController = {
       logger.error(`Error getting elements for board ${req.params.boardId}:`, error);
       return res.status(500).json({
         success: false,
-        message: 'Failed to get elements',
+        message: '获取画布内容失败',
       });
     }
   },
@@ -48,7 +48,7 @@ export const elementController = {
 
       const { fileIds } = req.body as { fileIds: string[] };
       if (!Array.isArray(fileIds)) {
-        return res.status(400).json({ success: false, message: 'fileIds must be an array' });
+        return res.status(400).json({ success: false, message: 'fileIds 必须是数组' });
       }
 
       const existingIds = await FileModel.checkExisting(boardId, fileIds);
@@ -57,7 +57,7 @@ export const elementController = {
       return res.status(200).json({ success: true, data: { missingIds } });
     } catch (error) {
       logger.error(`Error checking files for board ${req.params.boardId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to check files' });
+      return res.status(500).json({ success: false, message: '检查文件失败' });
     }
   },
 
@@ -67,20 +67,20 @@ export const elementController = {
 
       const board = await BoardModel.findById(boardId);
       if (!board) {
-        return res.status(404).json({ success: false, message: 'Board not found' });
+        return res.status(404).json({ success: false, message: '画板不存在' });
       }
 
       const { files } = req.body as { files: ExcalidrawFilesMap };
       if (!files || typeof files !== 'object') {
-        return res.status(400).json({ success: false, message: 'files must be an object' });
+        return res.status(400).json({ success: false, message: 'files 必须是对象' });
       }
 
       await FileModel.upsertMany(boardId, files);
 
-      return res.status(200).json({ success: true, message: 'Files uploaded' });
+      return res.status(200).json({ success: true, message: '文件已上传' });
     } catch (error) {
       logger.error(`Error uploading files for board ${req.params.boardId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to upload files' });
+      return res.status(500).json({ success: false, message: '上传文件失败' });
     }
   },
 
@@ -90,7 +90,7 @@ export const elementController = {
 
       const board = await BoardModel.findById(boardId);
       if (!board) {
-        return res.status(404).json({ success: false, message: 'Board not found' });
+        return res.status(404).json({ success: false, message: '画板不存在' });
       }
 
       const { upserted, deleted } = req.body as {
@@ -116,10 +116,10 @@ export const elementController = {
 
       await BoardModel.update(boardId, {});
 
-      return res.status(200).json({ success: true, message: 'Delta applied' });
+      return res.status(200).json({ success: true, message: '增量更新已应用' });
     } catch (error) {
       logger.error(`Error applying delta for board ${req.params.boardId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to apply delta' });
+      return res.status(500).json({ success: false, message: '保存增量更新失败' });
     }
   },
 
@@ -141,7 +141,7 @@ export const elementController = {
         if (!scenePayload.elements || !Array.isArray(scenePayload.elements)) {
           return res.status(400).json({
             success: false,
-            message: 'Invalid scene payload: elements must be an array',
+            message: '场景数据无效：elements 必须是数组',
           });
         }
         elements = scenePayload.elements;
@@ -156,7 +156,7 @@ export const elementController = {
       } else {
         return res.status(400).json({
           success: false,
-          message: 'Invalid request payload',
+          message: '请求数据无效',
         });
       }
 
@@ -164,7 +164,7 @@ export const elementController = {
       if (!board) {
         return res.status(404).json({
           success: false,
-          message: 'Board not found',
+          message: '画板不存在',
         });
       }
 
@@ -184,13 +184,13 @@ export const elementController = {
 
       return res.status(200).json({
         success: true,
-        message: `Elements replaced for board ${boardId}`,
+        message: '画布内容已替换',
       });
     } catch (error) {
       logger.error(`Error replacing elements for board ${req.params.boardId}:`, error);
       return res.status(500).json({
         success: false,
-        message: 'Failed to replace elements',
+        message: '替换画布内容失败',
       });
     }
   },

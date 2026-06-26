@@ -3,6 +3,7 @@ import { Board } from '../types/types';
 import { useBoardContext } from '../contexts/BoardProvider';
 import '../styles/Tab.scss';
 import Icon from './Icon';
+import { zhCN } from '../i18n/zhCN';
 
 interface TabProps {
   board: Board;
@@ -22,7 +23,7 @@ const Tab = ({ board, activeBoardId }: TabProps) => {
       aria-current={isActive ? 'page' : undefined}
     >
       <label htmlFor={`board-name-input-${board.id}`} className="visually-hidden">
-        Board Name
+        {zhCN.board.boardNameLabel}
       </label>
       <input
         type="text"
@@ -30,7 +31,7 @@ const Tab = ({ board, activeBoardId }: TabProps) => {
         className="tab-name"
         value={board.name}
         onChange={e => handleRenameBoard(board.id, e.target.value)}
-        aria-label={`Edit name for board ${board.name}`}
+        aria-label={zhCN.board.editBoardNameAria(board.name)}
         readOnly={!isActive}
       />
       {isActive && (
@@ -41,7 +42,7 @@ const Tab = ({ board, activeBoardId }: TabProps) => {
             e.stopPropagation();
             handleArchiveBoard(board.id);
           }}
-          aria-label={`Archive board ${board.name}`}
+          aria-label={zhCN.board.archiveBoardAria(board.name)}
         >
           <Icon name="close" />
         </button>

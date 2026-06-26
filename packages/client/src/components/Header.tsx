@@ -5,6 +5,7 @@ import SharePopup from './SharePopup';
 import Tab from './Tab';
 import { useBoardContext } from '../contexts/BoardProvider';
 import Icon from './Icon';
+import { zhCN } from '../i18n/zhCN';
 
 const Header = () => {
   const [isArchivePopupOpen, setIsArchivePopupOpen] = useState(false);
@@ -13,12 +14,16 @@ const Header = () => {
   const { boards, isLoading, activeBoardId, handleCreateBoard } = useBoardContext();
 
   if (isLoading) {
-    return <div className="tab-bar-loading">Loading boards...</div>;
+    return <div className="tab-bar-loading">{zhCN.board.tabBarLoading}</div>;
   }
 
   return (
     <div className="header">
-      <button className="archive-button" onClick={() => setIsArchivePopupOpen(true)}>
+      <button
+        className="archive-button"
+        onClick={() => setIsArchivePopupOpen(true)}
+        aria-label={zhCN.board.archiveBoards}
+      >
         <Icon name="archive" />
       </button>
 
@@ -29,14 +34,18 @@ const Header = () => {
         <button
           onClick={handleCreateBoard}
           className="create-board-button"
-          aria-label="Create new board"
+          aria-label={zhCN.board.createBoard}
         >
           +
         </button>
       </div>
 
       {activeBoardId && (
-        <button className="share-button" onClick={() => setIsSharePopupOpen(true)}>
+        <button
+          className="share-button"
+          onClick={() => setIsSharePopupOpen(true)}
+          aria-label={zhCN.board.shareBoard}
+        >
           <Icon name="share" />
         </button>
       )}

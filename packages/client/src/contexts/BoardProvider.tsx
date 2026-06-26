@@ -12,6 +12,7 @@ import { BoardService } from '../services/boardService';
 import { Board } from '../types/types';
 import Utils from '../utils';
 import logger from '../utils/logger';
+import { zhCN } from '../i18n/zhCN';
 
 interface BoardContextType {
   boards: Board[];
@@ -51,7 +52,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
       setBoards(data);
       setIsLoading(false);
     } catch (error) {
-      logger.error('Error fetching boards:', error, true);
+      logger.error(zhCN.errors.fetchBoards, error, true);
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +61,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
   const debouncedUpdateBoardName = useCallback(
     Utils.debounce((id: string, newName: string) => {
       BoardService.updateBoardName(id, newName).catch(error => {
-        logger.error(`Failed to update board ${id} name:`, error, true);
+        logger.error(zhCN.errors.renameBoard, error, true);
       });
     }, 500),
     []
@@ -83,7 +84,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
       setBoards(prevBoards => [...prevBoards, newBoard]);
       navigate(`/board/${newBoard.id}`);
     } catch (error) {
-      logger.error('Failed to create board:', error, true);
+      logger.error(zhCN.errors.createBoard, error, true);
     } finally {
       setIsLoading(false);
     }
@@ -120,7 +121,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
         }
         await fetchBoards();
       } catch (error) {
-        logger.error(`Failed to move board ${id} to trash:`, error, true);
+        logger.error(zhCN.errors.archiveBoard, error, true);
         setBoards(previousBoards);
       }
     },
@@ -140,7 +141,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
       didAttemptInitialBoardCreation.current = false;
     }
     if (activeBoardId && boards.length > 0 && !boards.find(b => b.id === activeBoardId)) {
-      logger.warn('Invalid board id, navigating to last board', true);
+      logger.warn(zhCN.errors.invalidBoardRedirect, true);
       navigate(`/board/${boards[boards.length - 1].id}`);
     }
   }, [boards, isLoading, handleCreateBoard, activeBoardId, navigate]);

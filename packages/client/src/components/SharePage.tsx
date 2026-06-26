@@ -5,6 +5,7 @@ import ExcalidrawEditor from './ExcalidrawEditor';
 import Loader from './Loader';
 import '../styles/SharePage.scss';
 import logger from '../utils/logger';
+import { zhCN } from '../i18n/zhCN';
 
 const SharePage = () => {
   const { shareId } = useParams<{ shareId: string }>();
@@ -21,8 +22,8 @@ const SharePage = () => {
         const info = await ShareService.getShareInfo(shareId);
         setShareInfo(info);
       } catch (err) {
-        setError('Share link not found or has been removed.');
-        logger.error('Error fetching share info:', err, true);
+        setError(zhCN.share.loadShareInfoError);
+        logger.error(zhCN.errors.fetchShareInfo, err, true);
       } finally {
         setIsLoading(false);
       }
@@ -34,7 +35,7 @@ const SharePage = () => {
   if (isLoading) {
     return (
       <div className="share-page loading">
-        <Loader message="Loading shared board..." />
+        <Loader message={zhCN.share.loadSharedBoard} />
       </div>
     );
   }
@@ -43,8 +44,8 @@ const SharePage = () => {
     return (
       <div className="share-page error">
         <div className="error-container">
-          <h2>Unable to load shared board</h2>
-          <p>{error || 'Invalid share link.'}</p>
+          <h2>{zhCN.share.unableToLoadSharedBoard}</h2>
+          <p>{error || zhCN.share.invalidShareLink}</p>
         </div>
       </div>
     );
@@ -56,14 +57,10 @@ const SharePage = () => {
     <div className="share-page">
       <div className="share-header">
         <span className="share-board-name">{shareInfo.name}</span>
-        {isReadOnly && <span className="share-badge">Read-only</span>}
+        {isReadOnly && <span className="share-badge">{zhCN.share.readonlyBadge}</span>}
       </div>
       <div className="editor-container">
-        <ExcalidrawEditor
-          key={shareId}
-          shareId={shareId}
-          readOnly={isReadOnly}
-        />
+        <ExcalidrawEditor key={shareId} shareId={shareId} readOnly={isReadOnly} />
       </div>
     </div>
   );

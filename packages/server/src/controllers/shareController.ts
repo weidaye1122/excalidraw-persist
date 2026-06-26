@@ -16,23 +16,29 @@ export const shareController = {
       const { permission } = req.body as { permission: 'edit' | 'readonly' };
 
       if (!permission || !['edit', 'readonly'].includes(permission)) {
-        return res.status(400).json({ success: false, message: "permission must be 'edit' or 'readonly'" });
+        return res
+          .status(400)
+          .json({ success: false, message: "permission 必须为 'edit' 或 'readonly'" });
       }
 
       const board = await BoardModel.findById(boardId);
       if (!board) {
-        return res.status(404).json({ success: false, message: 'Board not found' });
+        return res.status(404).json({ success: false, message: '画板不存在' });
       }
 
       const shareLink = await ShareLinkModel.create(boardId, permission);
 
       return res.status(200).json({
         success: true,
-        data: { id: shareLink.id, permission: shareLink.permission, created_at: shareLink.created_at },
+        data: {
+          id: shareLink.id,
+          permission: shareLink.permission,
+          created_at: shareLink.created_at,
+        },
       });
     } catch (error) {
       logger.error(`Error creating share link for board ${req.params.boardId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to create share link' });
+      return res.status(500).json({ success: false, message: '创建分享链接失败' });
     }
   },
 
@@ -42,7 +48,7 @@ export const shareController = {
 
       const board = await BoardModel.findById(boardId);
       if (!board) {
-        return res.status(404).json({ success: false, message: 'Board not found' });
+        return res.status(404).json({ success: false, message: '画板不存在' });
       }
 
       const links = await ShareLinkModel.findAllByBoardId(boardId);
@@ -53,7 +59,7 @@ export const shareController = {
       });
     } catch (error) {
       logger.error(`Error listing share links for board ${req.params.boardId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to list share links' });
+      return res.status(500).json({ success: false, message: '获取分享链接失败' });
     }
   },
 };
@@ -64,12 +70,12 @@ export const sharedController = {
     try {
       const link = await ShareLinkModel.findById(req.params.shareId);
       if (!link) {
-        return res.status(404).json({ success: false, message: 'Share link not found' });
+        return res.status(404).json({ success: false, message: '分享链接不存在' });
       }
 
       const board = await BoardModel.findById(link.board_id);
       if (!board) {
-        return res.status(404).json({ success: false, message: 'Board not found' });
+        return res.status(404).json({ success: false, message: '画板不存在' });
       }
 
       return res.status(200).json({
@@ -78,7 +84,7 @@ export const sharedController = {
       });
     } catch (error) {
       logger.error(`Error getting share info for ${req.params.shareId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to get share info' });
+      return res.status(500).json({ success: false, message: '获取分享信息失败' });
     }
   },
 
@@ -86,7 +92,7 @@ export const sharedController = {
     try {
       const link = await ShareLinkModel.findById(req.params.shareId);
       if (!link) {
-        return res.status(404).json({ success: false, message: 'Share link not found' });
+        return res.status(404).json({ success: false, message: '分享链接不存在' });
       }
 
       const elements = await ElementModel.findAllByBoardId(link.board_id);
@@ -101,7 +107,7 @@ export const sharedController = {
       });
     } catch (error) {
       logger.error(`Error getting elements for share ${req.params.shareId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to get elements' });
+      return res.status(500).json({ success: false, message: '获取共享画布内容失败' });
     }
   },
 
@@ -109,10 +115,10 @@ export const sharedController = {
     try {
       const link = await ShareLinkModel.findById(req.params.shareId);
       if (!link) {
-        return res.status(404).json({ success: false, message: 'Share link not found' });
+        return res.status(404).json({ success: false, message: '分享链接不存在' });
       }
       if (link.permission !== 'edit') {
-        return res.status(403).json({ success: false, message: 'Read-only share link' });
+        return res.status(403).json({ success: false, message: '当前分享链接为只读' });
       }
 
       const { upserted, deleted } = req.body as {
@@ -138,10 +144,10 @@ export const sharedController = {
 
       await BoardModel.update(link.board_id, {});
 
-      return res.status(200).json({ success: true, message: 'Delta applied' });
+      return res.status(200).json({ success: true, message: '增量更新已应用' });
     } catch (error) {
       logger.error(`Error applying delta for share ${req.params.shareId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to apply delta' });
+      return res.status(500).json({ success: false, message: '保存共享画布变更失败' });
     }
   },
 
@@ -152,10 +158,10 @@ export const sharedController = {
     try {
       const link = await ShareLinkModel.findById(req.params.shareId);
       if (!link) {
-        return res.status(404).json({ success: false, message: 'Share link not found' });
+        return res.status(404).json({ success: false, message: '分享链接不存在' });
       }
       if (link.permission !== 'edit') {
-        return res.status(403).json({ success: false, message: 'Read-only share link' });
+        return res.status(403).json({ success: false, message: '当前分享链接为只读' });
       }
 
       const body = req.body;
@@ -167,14 +173,14 @@ export const sharedController = {
       } else if (body && typeof body === 'object') {
         const scene = body as Partial<ExcalidrawSceneData>;
         if (!scene.elements || !Array.isArray(scene.elements)) {
-          return res.status(400).json({ success: false, message: 'elements must be an array' });
+          return res.status(400).json({ success: false, message: 'elements 必须是数组' });
         }
         elements = scene.elements;
         if (scene.files && typeof scene.files === 'object' && !Array.isArray(scene.files)) {
           files = { ...scene.files } as ExcalidrawFilesMap;
         }
       } else {
-        return res.status(400).json({ success: false, message: 'Invalid request payload' });
+        return res.status(400).json({ success: false, message: '请求数据无效' });
       }
 
       const db = await getDb();
@@ -191,10 +197,10 @@ export const sharedController = {
 
       await BoardModel.update(link.board_id, {});
 
-      return res.status(200).json({ success: true, message: 'Elements replaced' });
+      return res.status(200).json({ success: true, message: '画布内容已替换' });
     } catch (error) {
       logger.error(`Error replacing elements for share ${req.params.shareId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to replace elements' });
+      return res.status(500).json({ success: false, message: '替换共享画布内容失败' });
     }
   },
 
@@ -202,15 +208,15 @@ export const sharedController = {
     try {
       const link = await ShareLinkModel.findById(req.params.shareId);
       if (!link) {
-        return res.status(404).json({ success: false, message: 'Share link not found' });
+        return res.status(404).json({ success: false, message: '分享链接不存在' });
       }
       if (link.permission !== 'edit') {
-        return res.status(403).json({ success: false, message: 'Read-only share link' });
+        return res.status(403).json({ success: false, message: '当前分享链接为只读' });
       }
 
       const { fileIds } = req.body as { fileIds: string[] };
       if (!Array.isArray(fileIds)) {
-        return res.status(400).json({ success: false, message: 'fileIds must be an array' });
+        return res.status(400).json({ success: false, message: 'fileIds 必须是数组' });
       }
 
       const existingIds = await FileModel.checkExisting(link.board_id, fileIds);
@@ -219,7 +225,7 @@ export const sharedController = {
       return res.status(200).json({ success: true, data: { missingIds } });
     } catch (error) {
       logger.error(`Error checking files for share ${req.params.shareId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to check files' });
+      return res.status(500).json({ success: false, message: '检查文件失败' });
     }
   },
 
@@ -227,23 +233,23 @@ export const sharedController = {
     try {
       const link = await ShareLinkModel.findById(req.params.shareId);
       if (!link) {
-        return res.status(404).json({ success: false, message: 'Share link not found' });
+        return res.status(404).json({ success: false, message: '分享链接不存在' });
       }
       if (link.permission !== 'edit') {
-        return res.status(403).json({ success: false, message: 'Read-only share link' });
+        return res.status(403).json({ success: false, message: '当前分享链接为只读' });
       }
 
       const { files } = req.body as { files: ExcalidrawFilesMap };
       if (!files || typeof files !== 'object') {
-        return res.status(400).json({ success: false, message: 'files must be an object' });
+        return res.status(400).json({ success: false, message: 'files 必须是对象' });
       }
 
       await FileModel.upsertMany(link.board_id, files);
 
-      return res.status(200).json({ success: true, message: 'Files uploaded' });
+      return res.status(200).json({ success: true, message: '文件已上传' });
     } catch (error) {
       logger.error(`Error uploading files for share ${req.params.shareId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to upload files' });
+      return res.status(500).json({ success: false, message: '上传文件失败' });
     }
   },
 
@@ -251,7 +257,7 @@ export const sharedController = {
     try {
       const link = await ShareLinkModel.findById(req.params.shareId);
       if (!link) {
-        return res.status(404).json({ success: false, message: 'Share link not found' });
+        return res.status(404).json({ success: false, message: '分享链接不存在' });
       }
 
       const libraryData = await LibraryModel.getByBoardId(link.board_id);
@@ -262,7 +268,7 @@ export const sharedController = {
       });
     } catch (error) {
       logger.error(`Error getting library for share ${req.params.shareId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to get library' });
+      return res.status(500).json({ success: false, message: '获取素材库失败' });
     }
   },
 
@@ -270,24 +276,24 @@ export const sharedController = {
     try {
       const link = await ShareLinkModel.findById(req.params.shareId);
       if (!link) {
-        return res.status(404).json({ success: false, message: 'Share link not found' });
+        return res.status(404).json({ success: false, message: '分享链接不存在' });
       }
       if (link.permission !== 'edit') {
-        return res.status(403).json({ success: false, message: 'Read-only share link' });
+        return res.status(403).json({ success: false, message: '当前分享链接为只读' });
       }
 
       const { libraryItems } = req.body ?? {};
       if (!Array.isArray(libraryItems)) {
-        return res.status(400).json({ success: false, message: 'libraryItems must be an array' });
+        return res.status(400).json({ success: false, message: 'libraryItems 必须是数组' });
       }
 
       await LibraryModel.save(link.board_id, libraryItems);
       await BoardModel.update(link.board_id, {});
 
-      return res.status(200).json({ success: true, message: 'Library saved' });
+      return res.status(200).json({ success: true, message: '素材库已保存' });
     } catch (error) {
       logger.error(`Error saving library for share ${req.params.shareId}:`, error);
-      return res.status(500).json({ success: false, message: 'Failed to save library' });
+      return res.status(500).json({ success: false, message: '保存素材库失败' });
     }
   },
 };

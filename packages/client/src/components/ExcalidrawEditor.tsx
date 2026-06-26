@@ -15,6 +15,7 @@ import { useTheme } from '../contexts/ThemeProvider';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import logger from '../utils/logger';
 import { LibraryService } from '../services/libraryService';
+import { zhCN } from '../i18n/zhCN';
 
 interface ExcalidrawEditorProps {
   boardId?: string;
@@ -76,7 +77,7 @@ const ExcalidrawEditor = ({ boardId, shareId, readOnly }: ExcalidrawEditorProps)
             : await LibraryService.getBoardLibrary(resourceId);
           return { libraryItems: (response.libraryItems ?? []) as LibraryItems };
         } catch (error) {
-          logger.error(`Error loading library:`, error, true);
+          logger.error(zhCN.errors.loadLibrary, error, true);
           return null;
         }
       },
@@ -89,7 +90,7 @@ const ExcalidrawEditor = ({ boardId, shareId, readOnly }: ExcalidrawEditorProps)
             await LibraryService.saveBoardLibrary(resourceId, libraryItems);
           }
         } catch (error) {
-          logger.error(`Error saving library:`, error, true);
+          logger.error(zhCN.errors.saveLibrary, error, true);
         }
       },
     };
@@ -133,7 +134,7 @@ const ExcalidrawEditor = ({ boardId, shareId, readOnly }: ExcalidrawEditorProps)
         initializeVersionTracking([]);
       }
     } catch (error) {
-      logger.error('Error fetching board scene:', error, true);
+      logger.error(zhCN.errors.fetchBoardScene, error, true);
       setElements([]);
       setFiles({});
       initializeVersionTracking([]);
@@ -150,7 +151,7 @@ const ExcalidrawEditor = ({ boardId, shareId, readOnly }: ExcalidrawEditorProps)
     return (
       <div className="excalidraw-editor">
         <div className="excalidraw-container">
-          <Loader message="Loading board elements..." />
+          <Loader message={zhCN.board.loadBoardElements} />
         </div>
       </div>
     );
@@ -162,7 +163,7 @@ const ExcalidrawEditor = ({ boardId, shareId, readOnly }: ExcalidrawEditorProps)
     return (
       <div className="excalidraw-editor">
         <div className="excalidraw-container">
-          <p>Please select or create a board.</p>
+          <p>{zhCN.board.noBoardSelected}</p>
         </div>
       </div>
     );
@@ -173,6 +174,7 @@ const ExcalidrawEditor = ({ boardId, shareId, readOnly }: ExcalidrawEditorProps)
       <div className="excalidraw-container relative">
         <Excalidraw
           key={resourceId}
+          langCode="zh-CN"
           initialData={{
             elements,
             files,
@@ -182,7 +184,7 @@ const ExcalidrawEditor = ({ boardId, shareId, readOnly }: ExcalidrawEditorProps)
           }}
           onChange={handleChange}
           viewModeEnabled={readOnly}
-          name={`Board: ${resourceId}`}
+          name={zhCN.board.excalidrawName(resourceId)}
           excalidrawAPI={handleExcalidrawAPI}
           UIOptions={{
             canvasActions: {

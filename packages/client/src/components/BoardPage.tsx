@@ -3,6 +3,7 @@ import { useBoardContext } from '../contexts/BoardProvider';
 import '../styles/BoardPage.scss';
 import ExcalidrawEditor from './ExcalidrawEditor';
 import Loader from './Loader';
+import { zhCN } from '../i18n/zhCN';
 
 const BoardPage = () => {
   const { isLoading, activeBoardId } = useBoardContext();
@@ -10,7 +11,7 @@ const BoardPage = () => {
   if (isLoading) {
     return (
       <div className="board-page loading">
-        <Loader message="Loading board..." />
+        <Loader message={zhCN.board.loadBoard} />
       </div>
     );
   }
@@ -19,8 +20,8 @@ const BoardPage = () => {
     return (
       <div className="board-page error">
         <div className="error-container">
-          <h2>Error: Missing Board ID</h2>
-          <p>Please select a board or create a new one.</p>
+          <h2>{zhCN.board.missingBoardTitle}</h2>
+          <p>{zhCN.board.missingBoardDescription}</p>
         </div>
       </div>
     );

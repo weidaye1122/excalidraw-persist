@@ -3,6 +3,7 @@ import { ShareService, type ShareLink } from '../services/shareService';
 import '../styles/SharePopup.scss';
 import Icon from './Icon';
 import logger from '../utils/logger';
+import { zhCN } from '../i18n/zhCN';
 
 interface SharePopupProps {
   isOpen: boolean;
@@ -45,7 +46,7 @@ const SharePopup = ({ isOpen, onClose, boardId }: SharePopupProps) => {
       const data = await ShareService.listShareLinks(boardId);
       setLinks(data);
     } catch (error) {
-      logger.error('Error fetching share links:', error, true);
+      logger.error(zhCN.errors.fetchShareLinks, error, true);
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +62,7 @@ const SharePopup = ({ isOpen, onClose, boardId }: SharePopupProps) => {
       });
       copyToClipboard(link.id);
     } catch (error) {
-      logger.error('Error creating share link:', error, true);
+      logger.error(zhCN.errors.createShareLink, error, true);
     }
   };
 
@@ -70,13 +71,13 @@ const SharePopup = ({ isOpen, onClose, boardId }: SharePopupProps) => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(url);
     } else {
-      const textarea = document.createElement("textarea");
+      const textarea = document.createElement('textarea');
       textarea.value = url;
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
       document.body.appendChild(textarea);
       textarea.select();
-      document.execCommand("copy");
+      document.execCommand('copy');
       document.body.removeChild(textarea);
     }
     setCopiedId(shareId);
@@ -93,20 +94,20 @@ const SharePopup = ({ isOpen, onClose, boardId }: SharePopupProps) => {
   return (
     <div className="share-popup" ref={popupRef}>
       <div className="share-popup-header">
-        <h2>Share Board</h2>
-        <button className="share-popup-close" onClick={onClose}>
+        <h2>{zhCN.share.title}</h2>
+        <button className="share-popup-close" onClick={onClose} aria-label={zhCN.share.closeDialog}>
           <Icon name="close" />
         </button>
       </div>
       <div className="share-popup-content">
         {isLoading ? (
-          <p className="share-popup-loading">Loading...</p>
+          <p className="share-popup-loading">{zhCN.share.loading}</p>
         ) : (
           <>
             <div className="share-popup-option">
               <div className="share-popup-option-info">
-                <h3>Edit access</h3>
-                <p>Anyone with this link can edit</p>
+                <h3>{zhCN.share.editAccessTitle}</h3>
+                <p>{zhCN.share.editAccessDescription}</p>
               </div>
               {editLink ? (
                 <div className="share-popup-link-row">
@@ -114,8 +115,9 @@ const SharePopup = ({ isOpen, onClose, boardId }: SharePopupProps) => {
                   <button
                     className="share-popup-copy-button"
                     onClick={() => copyToClipboard(editLink.id)}
+                    aria-label={zhCN.share.copyEditLink}
                   >
-                    {copiedId === editLink.id ? 'Copied!' : <Icon name="copy" />}
+                    {copiedId === editLink.id ? zhCN.share.copied : <Icon name="copy" />}
                   </button>
                 </div>
               ) : (
@@ -123,15 +125,15 @@ const SharePopup = ({ isOpen, onClose, boardId }: SharePopupProps) => {
                   className="share-popup-create-button"
                   onClick={() => handleCreateLink('edit')}
                 >
-                  Create link
+                  {zhCN.share.createLink}
                 </button>
               )}
             </div>
 
             <div className="share-popup-option">
               <div className="share-popup-option-info">
-                <h3>Read-only access</h3>
-                <p>Anyone with this link can view</p>
+                <h3>{zhCN.share.readonlyAccessTitle}</h3>
+                <p>{zhCN.share.readonlyAccessDescription}</p>
               </div>
               {readonlyLink ? (
                 <div className="share-popup-link-row">
@@ -139,8 +141,9 @@ const SharePopup = ({ isOpen, onClose, boardId }: SharePopupProps) => {
                   <button
                     className="share-popup-copy-button"
                     onClick={() => copyToClipboard(readonlyLink.id)}
+                    aria-label={zhCN.share.copyReadonlyLink}
                   >
-                    {copiedId === readonlyLink.id ? 'Copied!' : <Icon name="copy" />}
+                    {copiedId === readonlyLink.id ? zhCN.share.copied : <Icon name="copy" />}
                   </button>
                 </div>
               ) : (
@@ -148,7 +151,7 @@ const SharePopup = ({ isOpen, onClose, boardId }: SharePopupProps) => {
                   className="share-popup-create-button"
                   onClick={() => handleCreateLink('readonly')}
                 >
-                  Create link
+                  {zhCN.share.createLink}
                 </button>
               )}
             </div>

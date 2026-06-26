@@ -6,6 +6,7 @@ import '../styles/ArchivePopup.scss';
 import { useBoardContext } from '../contexts/BoardProvider';
 import Icon from './Icon';
 import logger from '../utils/logger';
+import { formatDateTime, zhCN } from '../i18n/zhCN';
 
 interface ArchivePopupProps {
   isOpen: boolean;
@@ -51,8 +52,8 @@ const ArchivePopup = ({ onClose, isOpen }: ArchivePopupProps) => {
       const data = await BoardService.getTrashedBoards();
       setArchivedBoards(data);
     } catch (error) {
-      setError('Error connecting to server');
-      logger.error('Error fetching archived boards:', error, true);
+      setError(zhCN.errors.network);
+      logger.error(zhCN.errors.fetchArchivedBoards, error, true);
     } finally {
       setIsLoading(false);
     }
@@ -65,17 +66,13 @@ const ArchivePopup = ({ onClose, isOpen }: ArchivePopupProps) => {
       fetchBoards();
       navigate(`/board/${boardId}`);
     } catch (error) {
-      setError('Error connecting to server');
-      logger.error('Error restoring board:', error, true);
+      setError(zhCN.errors.network);
+      logger.error(zhCN.errors.restoreBoard, error, true);
     }
   };
 
   const handlePermanentDelete = async (boardId: string) => {
-    if (
-      !window.confirm(
-        'Are you sure you want to permanently delete this board? This action cannot be undone.'
-      )
-    ) {
+    if (!window.confirm(zhCN.archive.confirmPermanentDelete)) {
       return;
     }
 
@@ -83,13 +80,9 @@ const ArchivePopup = ({ onClose, isOpen }: ArchivePopupProps) => {
       await BoardService.permanentlyDeleteBoard(boardId);
       setArchivedBoards(prev => prev.filter(board => board.id !== boardId));
     } catch (error) {
-      setError('Error connecting to server');
-      logger.error('Error deleting board:', error, true);
+      setError(zhCN.errors.network);
+      logger.error(zhCN.errors.deleteBoard, error, true);
     }
-  };
-
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleString();
   };
 
   if (!isOpen) return null;
@@ -98,7 +91,7 @@ const ArchivePopup = ({ onClose, isOpen }: ArchivePopupProps) => {
     return (
       <div className="archive-popup">
         <div className="archive-popup-content">
-          <h2>Loading archived boards...</h2>
+          <h2>{zhCN.archive.loading}</h2>
         </div>
       </div>
     );
@@ -108,9 +101,9 @@ const ArchivePopup = ({ onClose, isOpen }: ArchivePopupProps) => {
     return (
       <div className="archive-popup">
         <div className="archive-popup-content">
-          <h2>Error</h2>
+          <h2>{zhCN.archive.loadErrorTitle}</h2>
           <p>{error}</p>
-          <button onClick={() => navigate('/')}>Return to Home</button>
+          <button onClick={() => navigate('/')}>{zhCN.common.returnHome}</button>
         </div>
       </div>
     );
@@ -119,33 +112,40 @@ const ArchivePopup = ({ onClose, isOpen }: ArchivePopupProps) => {
   return (
     <div className="archive-popup" ref={popupRef}>
       <div className="archive-popup-header">
-        <h2>Archived Boards</h2>
-        <button className="archive-popup-close" onClick={onClose}>
+        <h2>{zhCN.archive.title}</h2>
+        <button
+          className="archive-popup-close"
+          onClick={onClose}
+          aria-label={zhCN.archive.closeDialog}
+        >
           <Icon name="close" />
         </button>
       </div>
       <div className="archive-popup-content">
         {archivedBoards.length === 0 ? (
-          <p>No archived boards.</p>
+          <p>{zhCN.archive.empty}</p>
         ) : (
           archivedBoards.map(board => (
             <div key={board.id} className="archive-popup-item">
               <div>
                 <h3 className="archive-popup-item-name">{board.name}</h3>
-                <p className="archive-popup-item-date">Archived on: {formatDate(board.updated_at)}</p>
+                <p className="archive-popup-item-date">
+                  {zhCN.archive.archivedOn}
+                  {formatDateTime(board.updated_at)}
+                </p>
               </div>
               <div className="archive-popup-item-actions">
                 <button
                   className="archive-popup-item-action-button button-restore"
                   onClick={() => handleRestore(board.id)}
                 >
-                  Restore
+                  {zhCN.archive.restore}
                 </button>
                 <button
                   className="archive-popup-item-action-button button-delete"
                   onClick={() => handlePermanentDelete(board.id)}
                 >
-                  Delete Permanently
+                  {zhCN.archive.permanentlyDelete}
                 </button>
               </div>
             </div>

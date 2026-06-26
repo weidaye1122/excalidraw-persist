@@ -1,3 +1,5 @@
+import { zhCN } from '../i18n/zhCN';
+
 const API_BASE_URL = '/api';
 
 interface ApiResponse<T> {
@@ -15,7 +17,7 @@ export const api = {
     const data: ApiResponse<T> = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || 'Request failed');
+      throw new Error(data.message || zhCN.errors.requestFailed);
     }
 
     return (data.data ?? data) as T;
@@ -31,13 +33,13 @@ export const api = {
     });
 
     if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
+      throw new Error(zhCN.errors.requestFailedWithStatus(response.status));
     }
 
     const data: ApiResponse<T> = await response.json();
 
     if (!data.success) {
-      throw new Error(data.message || 'Request failed');
+      throw new Error(data.message || zhCN.errors.requestFailed);
     }
 
     return data.data as T;
@@ -53,13 +55,13 @@ export const api = {
     });
 
     if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
+      throw new Error(zhCN.errors.requestFailedWithStatus(response.status));
     }
 
     const data: ApiResponse<T> = await response.json();
 
     if (!data.success) {
-      throw new Error(data.message || 'Request failed');
+      throw new Error(data.message || zhCN.errors.requestFailed);
     }
 
     return data.data as T;
@@ -75,13 +77,13 @@ export const api = {
     });
 
     if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
+      throw new Error(zhCN.errors.requestFailedWithStatus(response.status));
     }
 
     const data: ApiResponse<T> = await response.json();
 
     if (!data.success) {
-      throw new Error(data.message || 'Request failed');
+      throw new Error(data.message || zhCN.errors.requestFailed);
     }
 
     return data.data as T;
@@ -93,13 +95,13 @@ export const api = {
     });
 
     if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
+      throw new Error(zhCN.errors.requestFailedWithStatus(response.status));
     }
 
     const data: ApiResponse<void> = await response.json();
 
     if (!data.success) {
-      throw new Error(data.message || 'Request failed');
+      throw new Error(data.message || zhCN.errors.requestFailed);
     }
   },
 };

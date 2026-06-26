@@ -5,6 +5,7 @@ import { ElementService, type BoardSceneData, type DeltaPayload } from '../servi
 import { ShareService } from '../services/shareService';
 import Utils from '../utils';
 import logger from '../utils/logger';
+import { zhCN } from '../i18n/zhCN';
 
 interface EditorApi {
   getElements: (id: string) => Promise<BoardSceneData>;
@@ -36,10 +37,13 @@ interface UseExcalidrawEditorOptions {
   readOnly?: boolean;
 }
 
-export const useExcalidrawEditor = (boardIdOrOptions: string | undefined | UseExcalidrawEditorOptions) => {
-  const options: UseExcalidrawEditorOptions = typeof boardIdOrOptions === 'object' && boardIdOrOptions !== null
-    ? boardIdOrOptions
-    : { boardId: boardIdOrOptions ?? undefined };
+export const useExcalidrawEditor = (
+  boardIdOrOptions: string | undefined | UseExcalidrawEditorOptions
+) => {
+  const options: UseExcalidrawEditorOptions =
+    typeof boardIdOrOptions === 'object' && boardIdOrOptions !== null
+      ? boardIdOrOptions
+      : { boardId: boardIdOrOptions ?? undefined };
 
   const { boardId, shareId, readOnly } = options;
   const resourceId = shareId || boardId;
@@ -129,7 +133,7 @@ export const useExcalidrawEditor = (boardIdOrOptions: string | undefined | UseEx
         }
         prevVersionsRef.current = newVersions;
       } catch (error) {
-        logger.error('Error saving scene data:', error, true);
+        logger.error(zhCN.errors.saveScene, error, true);
       } finally {
         isSavingRef.current = false;
       }

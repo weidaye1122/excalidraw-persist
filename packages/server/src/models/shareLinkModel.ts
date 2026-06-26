@@ -19,16 +19,13 @@ export class ShareLinkModel {
     permission: 'edit' | 'readonly'
   ): Promise<ShareLink | undefined> {
     const db = await getDb();
-    return db.get<ShareLink>(
-      'SELECT * FROM share_links WHERE board_id = ? AND permission = ?',
-      [boardId, permission]
-    );
+    return db.get<ShareLink>('SELECT * FROM share_links WHERE board_id = ? AND permission = ?', [
+      boardId,
+      permission,
+    ]);
   }
 
-  public static async create(
-    boardId: string,
-    permission: 'edit' | 'readonly'
-  ): Promise<ShareLink> {
+  public static async create(boardId: string, permission: 'edit' | 'readonly'): Promise<ShareLink> {
     const existing = await this.findByBoardAndPermission(boardId, permission);
     if (existing) return existing;
 
@@ -40,7 +37,7 @@ export class ShareLinkModel {
     );
 
     if (!result) {
-      throw new Error('Failed to create share link');
+      throw new Error('创建分享链接失败');
     }
 
     return result;

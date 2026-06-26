@@ -4,6 +4,7 @@ import SharePage from './components/SharePage';
 import Loader from './components/Loader';
 import { BoardProvider, useBoardContext } from './contexts/BoardProvider';
 import { ThemeProvider } from './contexts/ThemeProvider';
+import { zhCN } from './i18n/zhCN';
 import './styles/App.scss';
 import '@excalidraw/excalidraw/index.css';
 
@@ -15,7 +16,7 @@ const HomePage = () => {
   }
 
   if (boards.length === 0) {
-    return <div>No boards found</div>;
+    return <div>{zhCN.board.noBoardsFound}</div>;
   }
 
   return <Navigate to={`/board/${boards[0].id}`} />;
@@ -42,10 +43,7 @@ const App = () => {
               </BoardProvider>
             }
           />
-          <Route
-            path="/share/:shareId"
-            element={<SharePage />}
-          />
+          <Route path="/share/:shareId" element={<SharePage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>

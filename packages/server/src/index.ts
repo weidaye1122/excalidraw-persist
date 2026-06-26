@@ -21,7 +21,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   logger.error('Unhandled error:', err);
   res.status(500).json({
     success: false,
-    message: 'Internal server error',
+    message: '服务器内部错误',
   });
 });
 

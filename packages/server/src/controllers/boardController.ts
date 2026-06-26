@@ -16,7 +16,7 @@ export const boardController = {
       logger.error('Error creating board:', error);
       return res.status(500).json({
         success: false,
-        message: 'Failed to create board',
+        message: '创建画板失败',
       });
     }
   },
@@ -33,7 +33,7 @@ export const boardController = {
       logger.error('Error listing active boards:', error);
       return res.status(500).json({
         success: false,
-        message: 'Failed to list active boards',
+        message: '获取画板列表失败',
       });
     }
   },
@@ -50,7 +50,7 @@ export const boardController = {
       logger.error('Error listing boards in trash:', error);
       return res.status(500).json({
         success: false,
-        message: 'Failed to list boards in trash',
+        message: '获取回收站画板失败',
       });
     }
   },
@@ -65,14 +65,14 @@ export const boardController = {
       if (!board) {
         return res.status(404).json({
           success: false,
-          message: 'Board not found',
+          message: '画板不存在',
         });
       }
 
       if (board.status === BoardStatus.DELETED) {
         return res.status(400).json({
           success: false,
-          message: 'Cannot update a board in trash',
+          message: '回收站中的画板无法编辑',
         });
       }
 
@@ -86,7 +86,7 @@ export const boardController = {
       logger.error(`Error updating board ${req.params.id}:`, error);
       return res.status(500).json({
         success: false,
-        message: 'Failed to update board',
+        message: '更新画板失败',
       });
     }
   },
@@ -99,14 +99,14 @@ export const boardController = {
       if (!board) {
         return res.status(404).json({
           success: false,
-          message: 'Board not found',
+          message: '画板不存在',
         });
       }
 
       if (board.status === BoardStatus.DELETED) {
         return res.status(400).json({
           success: false,
-          message: 'Board is already in trash',
+          message: '画板已在回收站中',
         });
       }
 
@@ -114,13 +114,13 @@ export const boardController = {
 
       return res.status(200).json({
         success: true,
-        message: 'Board moved to trash',
+        message: '画板已移至回收站',
       });
     } catch (error) {
       logger.error(`Error moving board ${req.params.id} to trash:`, error);
       return res.status(500).json({
         success: false,
-        message: 'Failed to move board to trash',
+        message: '归档画板失败',
       });
     }
   },
@@ -133,14 +133,14 @@ export const boardController = {
       if (!board) {
         return res.status(404).json({
           success: false,
-          message: 'Board not found',
+          message: '画板不存在',
         });
       }
 
       if (board.status !== BoardStatus.DELETED) {
         return res.status(400).json({
           success: false,
-          message: 'Board is not in trash',
+          message: '画板不在回收站中',
         });
       }
 
@@ -148,13 +148,13 @@ export const boardController = {
 
       return res.status(200).json({
         success: true,
-        message: 'Board restored from trash',
+        message: '画板已恢复',
       });
     } catch (error) {
       logger.error(`Error restoring board ${req.params.id} from trash:`, error);
       return res.status(500).json({
         success: false,
-        message: 'Failed to restore board from trash',
+        message: '恢复画板失败',
       });
     }
   },
@@ -165,20 +165,20 @@ export const boardController = {
 
       const board = await BoardModel.findById(id);
       if (!board) {
-        return res.status(404).json({ success: false, message: 'Board not found' });
+        return res.status(404).json({ success: false, message: '画板不存在' });
       }
 
       await BoardModel.permanentlyDelete(id);
 
       return res.status(200).json({
         success: true,
-        message: 'Board and associated data permanently deleted',
+        message: '画板及相关数据已彻底删除',
       });
     } catch (error) {
       logger.error(`Error permanently deleting board ${req.params.id}:`, error);
       return res.status(500).json({
         success: false,
-        message: 'Failed to permanently delete board',
+        message: '彻底删除画板失败',
       });
     }
   },
